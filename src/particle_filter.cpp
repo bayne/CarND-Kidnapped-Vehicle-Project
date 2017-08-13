@@ -68,7 +68,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 
     double x, y, theta;
 
-    if (fabs(yaw_rate) < 0.0001) {
+    if (fabs(yaw_rate) > 0.0001) {
       // Turning
       x = particles[i].x +
           velocity / yaw_rate * (sin(particles[i].theta + yaw_rate * delta_t) - sin(particles[i].theta));
@@ -177,7 +177,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
       weight *= gauss_norm * exp(-1.0 * exponent);
 
-      if (weight < 0.0001) {
+      if (weight == 0.0) {
         break;
       }
     }
