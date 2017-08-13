@@ -78,7 +78,7 @@ public:
 	 * @param predicted Vector of predicted landmark observations
 	 * @param observation landmark observation
 	 */
-	std::vector<LandmarkObs>::iterator dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observation);
+	std::vector<LandmarkObs>::const_iterator dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observation);
 	
 	/**
 	 * updateWeights Updates the weights for each particle based on the likelihood of the 

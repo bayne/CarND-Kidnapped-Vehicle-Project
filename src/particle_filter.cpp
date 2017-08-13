@@ -93,29 +93,20 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 
 }
 
-vector<LandmarkObs>::iterator ParticleFilter::dataAssociation(
+vector<LandmarkObs>::const_iterator ParticleFilter::dataAssociation(
     std::vector<LandmarkObs> predicted,
     LandmarkObs &observation
 ) {
   // NOTE: this method will NOT be called by the grading code. But you will probably find it useful to
   //   implement this method and use it as a helper during the updateWeights phase.
 
-  auto nearest = predicted.begin();
-  double min = std::numeric_limits<double>::max();
-
-  for (auto it = predicted.begin(); it != predicted.end(); ++it) {
-    LandmarkObs & prediction = *it;
-
-    double distance = dist(observation.x, observation.y, prediction.x, prediction.y);
-
-    if (distance < min) {
-      min = distance;
-      nearest = it;
-    }
-  }
-
-  return nearest;
-
+  return min_element(
+      predicted.begin(),
+      predicted.end(),
+      [observation](LandmarkObs &a, LandmarkObs &b) {
+        return dist(observation.x, observation.y, a.x, a.y) < dist(observation.x, observation.y, b.x, b.y);
+      }
+  );
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
@@ -179,12 +170,16 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     double weight = 1.0;
 
     for (LandmarkObs &observation : mapObservations) {
-      LandmarkObs & nearest = *dataAssociation(landmarksInSensorRange, observation);
+      const LandmarkObs & nearest = *dataAssociation(landmarksInSensorRange, observation);
       double dx = observation.x - nearest.x;
       double dy = observation.y - nearest.y;
       double exponent = ((dx * dx) / (2.0 * sig_x_2)) + ((dy * dy) / (2.0 * sig_y_2));
 
       weight *= gauss_norm * exp(-1.0 * exponent);
+
+      if (weight < 0.0001) {
+        break;
+      }
     }
 
     particle.weight = weight;
