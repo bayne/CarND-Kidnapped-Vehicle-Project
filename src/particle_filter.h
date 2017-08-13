@@ -76,10 +76,9 @@ public:
 	 * dataAssociation Finds which observations correspond to which landmarks (likely by using
 	 *   a nearest-neighbors data association).
 	 * @param predicted Vector of predicted landmark observations
-	 * @param observations Vector of landmark observations
+	 * @param observation landmark observation
 	 */
-	std::vector<LandmarkObs, std::__1::allocator<LandmarkObs>>::iterator
-	dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observations);
+	std::vector<LandmarkObs>::iterator dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observation);
 	
 	/**
 	 * updateWeights Updates the weights for each particle based on the likelihood of the 

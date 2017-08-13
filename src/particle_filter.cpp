@@ -68,7 +68,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 
     double x, y, theta;
 
-    if (yaw_rate > 0.0001 || yaw_rate < -0.0001) {
+    if (fabs(yaw_rate) < 0.0001) {
       // Turning
       x = particles[i].x +
           velocity / yaw_rate * (sin(particles[i].theta + yaw_rate * delta_t) - sin(particles[i].theta));
